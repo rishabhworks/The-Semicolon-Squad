@@ -27,7 +27,7 @@ def get_database():
 def add_user_to_db(_email: str, user_password: str):
     client, collection = get_database()
     try:
-        user_document = {"username": _email, "password": user_password}
+        user_document = {"email": _email, "password": user_password}
         collection.insert_one(user_document)
 
     except ConfigurationError as e:
@@ -43,7 +43,7 @@ def add_user_to_db(_email: str, user_password: str):
 def check_user_credentials(_email: str, user_password: str):
     client, collection = get_database()
     try:
-        user_document = collection.find_one({"username": _email, "password": user_password})
+        user_document = collection.find_one({"email": _email, "password": user_password})
         return bool(user_document)
 
     except ConfigurationError as e:
