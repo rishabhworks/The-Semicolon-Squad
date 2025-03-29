@@ -112,12 +112,13 @@
   }
   
   .forgot-password {
-    display: block;
-    text-align: right;
-    font-size: 0.85rem;
-    margin-bottom: 15px;
+    background: none;
+    border: none;
     color: var(--secondary);
-    text-decoration: none;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-align: right;
   }
   
   .forgot-password:hover {

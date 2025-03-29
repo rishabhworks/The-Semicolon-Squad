@@ -31,7 +31,7 @@ const Login = () => {
             <input type="password" placeholder="Password" className="input" />
             <button type="button" className="password-toggle">👁️</button>
           </div>
-          <a href="#" className="forgot-password">Forgot password?</a>
+          <button className="forgot-password">Forgot password?</button>
 
           <button type="submit" className="login-button">Log in</button>
         </form>
@@ -50,8 +50,8 @@ const Login = () => {
 
         <p className="terms-text">
           By continuing, you agree to our{" "}
-          <a href="#" className="terms-link">Terms of Service</a> and{" "}
-          <a href="#" className="terms-link">Privacy Policy</a>.
+          <a className="terms-link">Terms of Service</a> and{" "}
+          <a className="terms-link">Privacy Policy</a>.
         </p>
       </div>
     </div>

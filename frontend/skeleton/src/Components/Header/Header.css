@@ -1,17 +1,29 @@
 .main-header {
+    position: fixed; /* 👈 Keeps it stuck to the top */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  
     display: flex;
     justify-content: space-between;
     align-items: center;
+  
     background-color: #6c63ff;
     padding: 15px 40px;
     color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .logo {
-    font-size: 1.6rem;
+  
+  .logo a {
+    text-decoration: none;  /* removes underline */
+    color: white;
     font-weight: bold;
-    letter-spacing: 1px;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   
   .nav-links a {
