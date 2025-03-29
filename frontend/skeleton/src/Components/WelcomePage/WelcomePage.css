@@ -1,0 +1,49 @@
+/* Basic styling for the homepage */
+.homepage-container {
+    text-align: center;
+    padding: 50px;
+    background-color: #f4f4f9;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .homepage-container h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+  
+  .homepage-container p {
+    font-size: 1.25rem;
+    margin-bottom: 40px;
+  }
+  
+  .button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .button-link {
+    text-decoration: none;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
+  .button:focus {
+    outline: none;
+  }
+  

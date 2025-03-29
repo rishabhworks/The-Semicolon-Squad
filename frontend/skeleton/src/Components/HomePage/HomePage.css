@@ -1,0 +1,126 @@
+/* Global reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb; /* Slightly warmer light background */
+}
+
+/* Main container */
+.homepage-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styling */
+.homepage-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.homepage-header h1 {
+  font-size: 2.5rem;
+  color: #1e3a8a; /* Rich deep blue for title */
+  margin-bottom: 0.5rem;
+}
+
+.homepage-caption {
+  font-size: 1.2rem;
+  color: #4b5563; /* Slate gray for caption */
+}
+
+/* Form grid layout for horizontal columns */
+.form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.form-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Form section styling for left columns */
+.form-section {
+  background-color: #ffffff; /* White background for sections */
+  padding: 1.5rem;
+  border: 1px solid #d1d5db; /* Light gray border */
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #1f2937; /* Darker slate gray for section titles */
+}
+
+/* Form section with DB, CI/CD, and OS (Updated color) */
+.form-section-DB-CI-OS {
+  background-color: #f4f7fb; /* Soft light blue for the DB, CI/CD, OS section */
+  padding: 1.5rem;
+  border: 1px solid #cbd5e1; /* Slightly darker border for contrast */
+  border-radius: 6px;
+  margin-top: 50px;
+}
+
+label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #374151; /* Dark gray for labels */
+}
+
+label input,
+label textarea,
+label select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.3rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: #ffffff; /* White for inputs */
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Submit button styling */
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  background-color: #34d399; /* Fresh mint green for button */
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #10b981; /* Darker mint green on hover */
+}
+
+/* Responsive adjustments: stack columns on smaller screens */
+@media (max-width: 768px) {
+  .form-grid {
+    flex-direction: column;
+  }
+}
+
