@@ -1,14 +1,19 @@
+// src/Components/Auth/Signin/Signin.js
+
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import "./Signin.css";
+import "../Auth.css";
 
 const SignIn = () => {
+  const navigate = useNavigate();
+
   const handleGoogleSuccess = (credentialResponse) => {
     const decoded = jwtDecode(credentialResponse.credential);
-    console.log("✅ Google User Info:", decoded);
-    // You can send 'decoded' to your backend for further auth handling
+    console.log("✅ Signed up with Google:", decoded);
+    // Save to backend or localStorage
+    navigate("/home");
   };
 
   const handleGoogleError = () => {

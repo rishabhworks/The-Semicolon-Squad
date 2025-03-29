@@ -1,0 +1,141 @@
+:root {
+    --primary: #4CAF50;
+    --secondary: #6c63ff;
+    --hover: #45a049;
+    --text-light: #ffffff;
+    --bg-light: #f9f9f9;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+  }
+  
+  body {
+    margin: 0;
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .login-container,
+  .signin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--bg-light);
+  }
+  
+  .login-box,
+  .signin-box {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    transition: var(--transition);
+  }
+  
+  .login-title,
+  .signin-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+  
+  .input:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+    outline: none;
+  }
+  
+  .password-container {
+    position: relative;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    background: none;
+    border: none;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  
+  .login-button,
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  
+  .login-button:hover,
+  .submit-button:hover {
+    background-color: var(--hover);
+  }
+  
+  .google-login {
+    margin-top: 20px;
+  }
+  
+  .switch-text {
+    margin-top: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .switch-link {
+    color: var(--secondary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .switch-link:hover {
+    text-decoration: underline;
+  }
+  
+  .forgot-password {
+    display: block;
+    text-align: right;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    color: var(--secondary);
+    text-decoration: none;
+  }
+  
+  .forgot-password:hover {
+    text-decoration: underline;
+  }
+  
+  .terms-text {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  .terms-link {
+    color: var(--secondary);
+    text-decoration: none;
+  }
+  
+  .terms-link:hover {
+    text-decoration: underline;
+  }
+  
