@@ -49,7 +49,7 @@ const HomePage = () => {
       <header className="homepage-header">
         <h1>Project Configuration Wizard</h1>
         <p className="homepage-caption">
-          Configure your full-stack project in minutes using a smart horizontal layout.
+          Configure your full-stack project in minutes using a smart tool to get you started & up to speed.
         </p>
       </header>
       <form onSubmit={handleSubmit} className="config-form">
