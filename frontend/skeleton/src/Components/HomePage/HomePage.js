@@ -1,86 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './HomePage.css';
+
+const techStacks = {
+  Windows: {
+    frontEnd: ['React', 'Angular', 'Vue.js', 'Ember.js', 'Backbone.js'],
+    backEnd: ['Node.js', '.NET', 'Java', 'Python', 'Ruby'],
+    databases: ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'SQL Server'],
+    cloudPlatforms: ['AWS', 'Azure', 'Google Cloud', 'Heroku', 'DigitalOcean'],
+    packageManagers: ['npm', 'yarn', 'NuGet', 'pip', 'gem'],
+  },
+  macOS: {
+    frontEnd: ['React', 'Vue.js', 'Angular', 'Ember.js', 'Backbone.js'],
+    backEnd: ['Node.js', 'Python', 'Ruby', 'Java', 'PHP'],
+    databases: ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'MariaDB'],
+    cloudPlatforms: ['AWS', 'Google Cloud', 'Heroku', 'DigitalOcean', 'Linode'],
+    packageManagers: ['npm', 'yarn', 'Homebrew', 'pip', 'gem'],
+  },
+};
+
+const versions = {
+  'Node.js': ['18.x', '16.x', '14.x'],
+  '.NET': ['7.0', '6.0', '5.0'],
+  Java: ['21', '17', '11', '8'],
+  Python: ['3.12', '3.11', '3.10', '3.9'],
+  Ruby: ['3.3', '3.2', '3.1'],
+  PHP: ['8.1', '8.0', '7.4'],
+  React: ['18.x', '17.x', '16.x'],
+  Angular: ['17', '16', '15'],
+  'Vue.js': ['3.x', '2.x'],
+  'Ember.js': ['4.x', '3.x'],
+  'Backbone.js': ['1.4', '1.3'],
+  MySQL: ['8.0', '5.7'],
+  PostgreSQL: ['14', '13', '12'],
+  MongoDB: ['5.0', '4.4', '4.2'],
+  SQLite: ['3.35', '3.34'],
+  'SQL Server': ['2019', '2017'],
+  MariaDB: ['10.6', '10.5'],
+};
 
 const HomePage = () => {
   const [selectedOS, setSelectedOS] = useState('Windows');
+  const [frontEnd, setFrontEnd] = useState('');
+  const [backEnd, setBackEnd] = useState('');
+  const [database, setDatabase] = useState('');
+  const [cloudPlatform, setCloudPlatform] = useState('');
+  const [frontEndVersion, setFrontEndVersion] = useState('');
+  const [backEndVersion, setBackEndVersion] = useState('');
+  const [databaseVersion, setDatabaseVersion] = useState('');
+  const [packageManager, setPackageManager] = useState('');
+  const [projectName, setProjectName] = useState('');
+  const [projectDesc, setProjectDesc] = useState('');
 
-  const [formData, setFormData] = useState({
-    projectName: '',
-    projectDescription: '',
-    frontEnd: {
-      framework: 'React',
-      version: '',
-      packageManager: 'npm',
-      additionalTools: [],
-    },
-    backEnd: {
-      language: 'Node.js',
-      version: '',
-      framework: 'Express',
-      additionalTools: [],
-    },
-    database: {
-      type: 'PostgreSQL',
-      version: '',
-      orm: '',
-    },
-    cloudPlatform: '',
-    ciCdPlatform: '',
-    dockerSupport: false,
-  });
-
-  const handleOSToggle = (os) => setSelectedOS(os);
-
-  const handleChange = (e, section, field) => {
-    const { value, type, checked } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [section]: {
-        ...prevData[section],
-        [field]: newValue,
-      },
-    }));
-  };
-
-  const handleMultiSelectChange = (e, section, field) => {
-    const options = e.target.options;
-    const selectedOptions = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selectedOptions.push(options[i].value);
-      }
-    }
-    setFormData((prevData) => ({
-      ...prevData,
-      [section]: {
-        ...prevData[section],
-        [field]: selectedOptions,
-      },
-    }));
-  };
+  useEffect(() => {
+    setFrontEnd('');
+    setBackEnd('');
+    setDatabase('');
+    setCloudPlatform('');
+    setFrontEndVersion('');
+    setBackEndVersion('');
+    setDatabaseVersion('');
+    setPackageManager('');
+  }, [selectedOS]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Final Configuration:', formData);
+    const config = {
+      OS: selectedOS,
+      Project: projectName,
+      Description: projectDesc,
+      FrontEnd: { Framework: frontEnd, Version: frontEndVersion },
+      BackEnd: { Framework: backEnd, Version: backEndVersion },
+      Database: { Name: database, Version: databaseVersion },
+      CloudPlatform: cloudPlatform,
+      PackageManager: packageManager,
+    };
+    console.log('Generated Project Configuration:', config);
+    alert(`✅ Project "${projectName}" configuration generated! Check console.`);
   };
 
   return (
-    <div className="homepage-container">
-      <header className="homepage-header">
-        <h1>Project Configuration Wizard</h1>
-        <p>Configure your full-stack project by selecting your preferred technologies and tools.</p>
+    <div className={`homepage ${selectedOS}`}>
+      <header>
+        <h1>🚀 Project Configuration Wizard</h1>
         <div className="os-toggle">
           <button
-            className={`os-button ${selectedOS === 'Windows' ? 'active' : ''}`}
-            onClick={() => handleOSToggle('Windows')}
+            className={selectedOS === 'Windows' ? 'active' : ''}
+            onClick={() => setSelectedOS('Windows')}
           >
             🪟 Windows
           </button>
           <button
-            className={`os-button ${selectedOS === 'macOS' ? 'active' : ''}`}
-            onClick={() => handleOSToggle('macOS')}
+            className={selectedOS === 'macOS' ? 'active' : ''}
+            onClick={() => setSelectedOS('macOS')}
           >
             🍎 macOS
           </button>
@@ -88,153 +99,144 @@ const HomePage = () => {
       </header>
 
       <form className="config-form" onSubmit={handleSubmit}>
-        <h2>Project General Information</h2>
-        <input
-          type="text"
-          placeholder="Project Name"
-          value={formData.projectName}
-          onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-          required
-        />
-        <textarea
-          placeholder="Project Description (optional)"
-          value={formData.projectDescription}
-          onChange={(e) => setFormData({ ...formData, projectDescription: e.target.value })}
-        />
-
-        <h2>Front-End Configuration</h2>
-        <select
-          value={formData.frontEnd.framework}
-          onChange={(e) => handleChange(e, 'frontEnd', 'framework')}
-        >
-          <option value="React">React</option>
-          <option value="Vue.js">Vue.js</option>
-          <option value="Angular">Angular</option>
-          <option value="Svelte">Svelte</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Front-End Framework Version (default: latest)"
-          value={formData.frontEnd.version}
-          onChange={(e) => handleChange(e, 'frontEnd', 'version')}
-        />
-        <select
-          value={formData.frontEnd.packageManager}
-          onChange={(e) => handleChange(e, 'frontEnd', 'packageManager')}
-        >
-          <option value="npm">npm</option>
-          <option value="yarn">yarn</option>
-          <option value="pnpm">pnpm</option>
-        </select>
-        <label>Additional Front-End Tools</label>
-        <select
-          multiple
-          value={formData.frontEnd.additionalTools}
-          onChange={(e) => handleMultiSelectChange(e, 'frontEnd', 'additionalTools')}
-        >
-          <option value="Redux">Redux</option>
-          <option value="Tailwind CSS">Tailwind CSS</option>
-          <option value="Material-UI">Material-UI</option>
-          <option value="Bootstrap">Bootstrap</option>
-          <option value="Sass">Sass</option>
-        </select>
-
-        <h2>Back-End Configuration</h2>
-        <select
-          value={formData.backEnd.language}
-          onChange={(e) => handleChange(e, 'backEnd', 'language')}
-        >
-          <option value="Node.js">Node.js</option>
-          <option value="Python">Python</option>
-          <option value="Java">Java</option>
-          <option value="Ruby">Ruby</option>
-          <option value="Go">Go</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Back-End Language Version (default: latest)"
-          value={formData.backEnd.version}
-          onChange={(e) => handleChange(e, 'backEnd', 'version')}
-        />
-        <select
-          value={formData.backEnd.framework}
-          onChange={(e) => handleChange(e, 'backEnd', 'framework')}
-        >
-          <option value="Express">Express (Node.js)</option>
-          <option value="Django">Django (Python)</option>
-          <option value="Spring Boot">Spring Boot (Java)</option>
-          <option value="Ruby on Rails">Ruby on Rails (Ruby)</option>
-          <option value="Gin">Gin (Go)</option>
-        </select>
-        <label>Additional Back-End Tools</label>
-        <select
-          multiple
-          value={formData.backEnd.additionalTools}
-          onChange={(e) => handleMultiSelectChange(e, 'backEnd', 'additionalTools')}
-        >
-          <option value="JWT">JWT for Authentication</option>
-          <option value="Sequelize">Sequelize ORM</option>
-          <option value="Mongoose">Mongoose ORM</option>
-          <option value="TypeORM">TypeORM</option>
-          <option value="Logger">Logger</option>
-        </select>
-
-        <h2>Database Configuration</h2>
-        <select
-          value={formData.database.type}
-          onChange={(e) => handleChange(e, 'database', 'type')}
-        >
-          <option value="PostgreSQL">PostgreSQL</option>
-          <option value="MySQL">MySQL</option>
-          <option value="MongoDB">MongoDB</option>
-          <option value="SQLite">SQLite</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Database Version"
-          value={formData.database.version}
-          onChange={(e) => handleChange(e, 'database', 'version')}
-        />
-        <input
-          type="text"
-          placeholder="ORM Library (e.g. Sequelize, Mongoose)"
-          value={formData.database.orm}
-          onChange={(e) => handleChange(e, 'database', 'orm')}
-        />
-
-        <h2>CI/CD & Deployment</h2>
-        <select
-          value={formData.ciCdPlatform}
-          onChange={(e) => setFormData({ ...formData, ciCdPlatform: e.target.value })}
-        >
-          <option value="GitHub Actions">GitHub Actions</option>
-          <option value="GitLab CI">GitLab CI</option>
-          <option value="Travis CI">Travis CI</option>
-          <option value="Jenkins">Jenkins</option>
-        </select>
-        <label>
+        <section>
+          <label>Project Name</label>
           <input
-            type="checkbox"
-            checked={formData.dockerSupport}
-            onChange={(e) => setFormData({ ...formData, dockerSupport: e.target.checked })}
-          /> Include Docker Support
-        </label>
-        <select
-          value={formData.cloudPlatform}
-          onChange={(e) => setFormData({ ...formData, cloudPlatform: e.target.value })}
-        >
-          <option value="">Select Cloud Platform</option>
-          <option value="AWS">AWS</option>
-          <option value="GCP">GCP</option>
-          <option value="Azure">Azure</option>
-          <option value="Vercel">Vercel</option>
-          <option value="Netlify">Netlify</option>
-        </select>
+            required
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="My Awesome App"
+          />
+        </section>
 
-        <button type="submit" className="submit-button">Generate Project Skeleton</button>
-      </form>
+        <section>
+          <label>Description (optional)</label>
+          <textarea
+            value={projectDesc}
+            onChange={(e) => setProjectDesc(e.target.value)}
+            placeholder="Brief description"
+          ></textarea>
+        </section>
+
+        <section>
+          <label>Front-End Framework</label>
+          <select
+            required
+            value={frontEnd}
+            onChange={(e) => setFrontEnd(e.target.value)}
+          >
+            <option value="">Select Front-End</option>
+            {techStacks[selectedOS].frontEnd.map((fe) => (
+              <option key={fe} value={fe}>
+                {fe}
+              </option>
+            ))}
+          </select>
+
+          {frontEnd && (
+            <>
+              <label>{frontEnd} Version</label>
+              <select
+                required
+                value={frontEndVersion}
+                onChange={(e) => setFrontEndVersion(e.target.value)}
+              >
+                <option value="">Select Version</option>
+                {versions[frontEnd].map((ver) => (
+                  <option key={ver} value={ver}>
+                    {ver}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+        </section>
+
+        <section>
+          <label>Back-End Framework</label>
+          <select
+            required
+            value={backEnd}
+            onChange={(e) => setBackEnd(e.target.value)}
+          >
+            <option value="">Select Back-End</option>
+            {techStacks[selectedOS].backEnd.map((be) => (
+              <option key={be} value={be}>
+                {be}
+              </option>
+            ))}
+          </select>
+
+          {backEnd && (
+            <>
+              <label>{backEnd} Version</label>
+              <select
+                required
+                value={backEndVersion}
+                onChange={(e) => setBackEndVersion(e.target.value)}
+              >
+
+      <option value="">Select Version</option>
+      {versions[backEnd].map((ver) => (
+        <option key={ver} value={ver}>{ver}</option>
+      ))}
+    </select>
+    </>
+    )}
+    </section>
+
+    <section>
+    <label>Database</label>
+    <select required value={database} onChange={(e) => setDatabase(e.target.value)}>
+    <option value="">Select Database</option>
+    {techStacks[selectedOS].databases.map((db) => (
+    <option key={db} value={db}>{db}</option>
+    ))}
+    </select>
+
+    {database && (
+    <>
+    <label>{database} Version</label>
+    <select
+      required
+      value={databaseVersion}
+      onChange={(e) => setDatabaseVersion(e.target.value)}
+    >
+      <option value="">Select Version</option>
+      {versions[database].map((ver) => (
+        <option key={ver} value={ver}>{ver}</option>
+      ))}
+    </select>
+    </>
+    )}
+    </section>
+
+    <section>
+    <label>Cloud Platform</label>
+    <select required value={cloudPlatform} onChange={(e) => setCloudPlatform(e.target.value)}>
+    <option value="">Select Cloud Platform</option>
+    {techStacks[selectedOS].cloudPlatforms.map((cloud) => (
+    <option key={cloud} value={cloud}>{cloud}</option>
+    ))}
+    </select>
+    </section>
+
+    <section>
+    <label>Package Manager</label>
+    <select required value={packageManager} onChange={(e) => setPackageManager(e.target.value)}>
+    <option value="">Select Package Manager</option>
+    {techStacks[selectedOS].packageManagers.map((pm) => (
+    <option key={pm} value={pm}>{pm}</option>
+    ))}
+    </select>
+    </section>
+
+    <button type="submit" className="submit-btn">
+    Generate Project 🚀
+    </button>
+    </form>
     </div>
-  );
+    );
 };
 
 export default HomePage;
