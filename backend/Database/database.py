@@ -6,37 +6,51 @@ import os
 
 load_dotenv()
 
-username = quote_plus(os.getenv('MONGODB_USERNAME'))
-password = quote_plus(os.getenv('MONGODB_PASSWORD'))
-cluster_url = os.getenv('MONGODB_CLUSTER_URL')
+# Function to establish a database connection
+def get_database():
+    username = quote_plus(os.getenv('MONGODB_USERNAME'))
+    password = quote_plus(os.getenv('MONGODB_PASSWORD'))
+    cluster_url = os.getenv('MONGODB_CLUSTER_URL')
 
-uri = f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Cluster0"
-
-try:
-    # Initialize MongoDB Client
+    uri = f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Cluster0"
     client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 
-    # Verify Connection
-    client.admin.command('ping')
-    print("✅ Successfully connected to MongoDB!")
+    try:
+        client.admin.command('ping')
+        db = client['Skeleton']
+        return client, db['Users']
 
-    # Access the database and collection
-    db = client['Skeleton']
-    collection = db['Users']
+    except ConnectionFailure as e:
+        raise e
 
-    # (Optional) Verify collection access
-    collection_count = collection.count_documents({})
-    print(f"📂 Collection 'Users' has {collection_count} documents.")
+# Function to insert username and password into the database
+def add_user_to_db(user_name: str, user_password: str):
+    client, collection = get_database()
+    try:
+        user_document = {"username": user_name, "password": user_password}
+        collection.insert_one(user_document)
 
-except ConnectionFailure as e:
-    print("❌ Connection failed:", e)
-except ConfigurationError as e:
-    print("⚙️ Configuration error:", e)
-except OperationFailure as e:
-    print("🚫 Authentication/Operation error:", e)
-except Exception as e:
-    print("🚨 An unexpected error occurred:", e)
-finally:
-    # Close the client connection
-    client.close()
-    print("🔒 MongoDB connection closed.")
+    except ConfigurationError as e:
+        raise e
+    except OperationFailure as e:
+        raise e
+    except Exception as e:
+        raise e
+    finally:
+        client.close()
+
+# Function to check if username and password exist in the database
+def check_user_credentials(user_name: str, user_password: str):
+    client, collection = get_database()
+    try:
+        user_document = collection.find_one({"username": user_name, "password": user_password})
+        return bool(user_document)
+
+    except ConfigurationError as e:
+        raise e
+    except OperationFailure as e:
+        raise e
+    except Exception as e:
+        raise e
+    finally:
+        client.close()
