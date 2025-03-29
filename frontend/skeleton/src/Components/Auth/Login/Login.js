@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Auth.css";
+import { loginUser } from "../../../Services/loginapi"; // Adjust path if needed
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,23 +12,15 @@ const Login = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const response = await fetch("http://127.0.0.1:5000/api/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: email, // Using email as username
-        password: password,
-        route: "login"
-      }),
-    });
+    const result = await loginUser(email, password);
 
-    const data = await response.json();
-    if (response.ok) {
-      console.log("✅ Login successful");
+    if (result.success) {
+      localStorage.setItem("userAuthenticated", "true"); // save auth state
       navigate("/home");
-    } else {
-      console.error("❌ Login failed:", data.message || data.error);
-      alert("Login failed");
+    }      
+          else {
+      console.error("❌ Login failed:", result.message);
+      alert(result.message);
     }
   };
 
