@@ -24,10 +24,10 @@ def get_database():
         raise e
 
 # Function to insert username and password into the database
-def add_user_to_db(user_name: str, user_password: str):
+def add_user_to_db(_email: str, user_password: str):
     client, collection = get_database()
     try:
-        user_document = {"username": user_name, "password": user_password}
+        user_document = {"username": _email, "password": user_password}
         collection.insert_one(user_document)
 
     except ConfigurationError as e:
@@ -40,10 +40,10 @@ def add_user_to_db(user_name: str, user_password: str):
         client.close()
 
 # Function to check if username and password exist in the database
-def check_user_credentials(user_name: str, user_password: str):
+def check_user_credentials(_email: str, user_password: str):
     client, collection = get_database()
     try:
-        user_document = collection.find_one({"username": user_name, "password": user_password})
+        user_document = collection.find_one({"username": _email, "password": user_password})
         return bool(user_document)
 
     except ConfigurationError as e:
