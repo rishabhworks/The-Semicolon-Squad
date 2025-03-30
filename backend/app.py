@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from Database.database import add_user_to_db, check_user_credentials
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
+CORS(app)  # ✅ Enable CORS for all routes
 
 @app.route('/api/user', methods=['POST'])
 def handle_user():
     try:
         data = request.get_json()
+        print(data)  
         email = data.get('email')
         password = data.get('password')
         route = data.get('route')  # either 'signup' or 'login'

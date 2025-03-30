@@ -18,15 +18,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<SignIn />} />
 
-        {/* Protected Route (inline check) */}
         <Route
           path="/home"
           element={
-            isAuthenticated ? <HomePage /> : <Navigate to="/login" />
+            localStorage.getItem("userAuthenticated") === "true"
+              ? <HomePage />
+              : <Navigate to="/login" />
           }
         />
-        {/* Add more protected routes here using the same pattern */}
-      </Routes>
+        </Routes>
       <Footer />
     </BrowserRouter>
   );

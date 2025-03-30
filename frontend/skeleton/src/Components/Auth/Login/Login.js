@@ -16,9 +16,9 @@ const Login = () => {
     const result = await loginUser(email, password);
 
     if (result.success) {
-      localStorage.setItem("userAuthenticated", "true"); // save auth state
-      navigate("/home");
-    }      
+      localStorage.setItem("userAuthenticated", "true");
+      navigate("/home"); // ✅ This is what redirects
+    }         
           else {
       console.error("❌ Login failed:", result.message);
       alert(result.message);
