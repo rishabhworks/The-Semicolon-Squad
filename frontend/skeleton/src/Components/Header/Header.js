@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./Header.css";
 
-const Header = ({ isAuthenticated, setIsAuthenticated }) => {
+const Header = ({ isAuthenticated, setIsAuthenticated, showLogoutOnlyOnSecurePages }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -15,13 +15,15 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
     navigate("/login");
   };
 
+  const shouldShowLogout = showLogoutOnlyOnSecurePages && isAuthenticated;
+
   return (
     <header className="main-header">
       <div className="logo">
         <Link to="/">🦴 Skeleton</Link>
       </div>
       <nav className="nav-links">
-        {!isAuthenticated ? (
+        {!shouldShowLogout ? (
           <div className="dropdown">
             <button className="dropdown-btn" onClick={toggleDropdown}>
               <i className="fas fa-user-circle"></i>
