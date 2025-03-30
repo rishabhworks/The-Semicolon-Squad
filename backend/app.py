@@ -3,16 +3,14 @@ from Database.database import add_user_to_db, check_user_credentials
 from werkzeug.exceptions import HTTPException
 import google.generativeai as genai
 import os
-import tempfile
 from dotenv import load_dotenv
 from flask_cors import CORS
 from AI.ai import generate_ai_response
 
-# Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # ✅ Enables CORS for all incoming requests
+CORS(app)  
 
 # Configure Gemini API
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -25,13 +23,16 @@ else:
 genai.configure(api_key=GEMINI_API_KEY)
 
 
-@app.route('/api/user', methods=['POST'])
+@app.route('/api/user', methods=['POST', 'OPTIONS'])
 def handle_user():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200  # Preflight response
+
     try:
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
-        route = data.get('route')  # 'signup' or 'login'
+        route = data.get('route')
 
         if not email or not password or not route:
             return jsonify({"error": "Missing required fields"}), 400
