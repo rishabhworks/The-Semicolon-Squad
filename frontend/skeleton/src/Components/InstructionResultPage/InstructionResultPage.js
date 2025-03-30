@@ -4,24 +4,39 @@ import './InstructionResultPage.css';
 
 const InstructionResultPage = ({ steps = {} }) => {
   const { state } = useLocation();  // ADDED: Get data from HomePage
-  const { aiResponse = '', config = {} } = state || {};  // ADDED: Extract aiResponse and config
-  const commands = typeof aiResponse === 'string' ? aiResponse.split('\n').filter(cmd => cmd.trim()) : [];  // ADDED: Split string response into array
+  const [isLoading, setIsLoading] = React.useState(true);  // ADDED: Loading state
+  const apiSteps = state?.steps || {};  // ADDED: API-provided steps
 
-  // ADDED: Categorize commands based on keywords and config
-  const categorizedSteps = {
-    initialSetup: commands.filter(cmd => cmd.includes('mkdir') || cmd.includes('md') || cmd.includes('cd')),
-    frontendSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.FrontEnd?.Framework.toLowerCase() || '')),
-    backendSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.BackEnd?.Framework.toLowerCase() || '')),
-    databaseSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.Database?.Name.toLowerCase() || '')),
-    ciCdSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.PackageManager?.toLowerCase() || '') || cmd.toLowerCase().includes('cloud')),
-  };
+  // ADDED: Simulate loading until API data is ready
+  React.useEffect(() => {
+    if (state?.steps) {
+      setIsLoading(false);
+    }
+  }, [state]);
 
-  // ADDED: Generate bash script from all commands
-  const generatedBashScript = commands.length ? (config.OS === 'Windows' ? '@echo off\n' : '#!/bin/bash\n') + commands.join('\n') : '';
+  // ADDED: Helper function to render steps with instruction and command
+  const renderSteps = (stepsArray) => (
+    <ol className="step-list">
+      {stepsArray && stepsArray.length > 0 ? (
+        stepsArray.map((step, index) => (
+          <li key={index} className="step-item">
+            <span className="instruction-text">{step.instruction}</span>
+            <br />
+            <code className="cli-command">{step.command}</code>
+          </li>
+        ))
+      ) : (
+        <li className="step-item">No instructions available.</li>
+      )}
+    </ol>
+  );
 
   return (
     <div className="instruction-container">
       <h1 className="instruction-title">Command Line Instructions</h1>
+
+      {/* ADDED: Loading state */}
+      {isLoading && <div className="loading">Loading...</div>}
 
       {/* Initial Setup Section */}
       <div className="step-section">
@@ -35,14 +50,8 @@ const InstructionResultPage = ({ steps = {} }) => {
             <li className="step-item">No instructions available.</li>
           )}
         </ol>
-        {/* ADDED: Display categorized initial setup */}
-        {categorizedSteps.initialSetup.length > 0 && (
-          <ol className="step-list">
-            {categorizedSteps.initialSetup.map((step, index) => (
-              <li key={`initial-${index}`} className="step-item">{step}</li>
-            ))}
-          </ol>
-        )}
+        {/* ADDED: Render API-provided initial setup */}
+        {!isLoading && apiSteps.initialSetup && renderSteps(apiSteps.initialSetup)}
       </div>
 
       {/* Frontend Setup Section */}
@@ -57,14 +66,8 @@ const InstructionResultPage = ({ steps = {} }) => {
             <li className="step-item">No instructions available.</li>
           )}
         </ol>
-        {/* ADDED: Display categorized frontend setup */}
-        {categorizedSteps.frontendSetup.length > 0 && (
-          <ol className="step-list">
-            {categorizedSteps.frontendSetup.map((step, index) => (
-              <li key={`frontend-${index}`} className="step-item">{step}</li>
-            ))}
-          </ol>
-        )}
+        {/* ADDED: Render API-provided frontend setup */}
+        {!isLoading && apiSteps.frontendSetup && renderSteps(apiSteps.frontendSetup)}
       </div>
 
       {/* Backend Setup Section */}
@@ -79,14 +82,8 @@ const InstructionResultPage = ({ steps = {} }) => {
             <li className="step-item">No instructions available.</li>
           )}
         </ol>
-        {/* ADDED: Display categorized backend setup */}
-        {categorizedSteps.backendSetup.length > 0 && (
-          <ol className="step-list">
-            {categorizedSteps.backendSetup.map((step, index) => (
-              <li key={`backend-${index}`} className="step-item">{step}</li>
-            ))}
-          </ol>
-        )}
+        {/* ADDED: Render API-provided backend setup */}
+        {!isLoading && apiSteps.backendSetup && renderSteps(apiSteps.backendSetup)}
       </div>
 
       {/* Database Setup Section */}
@@ -101,14 +98,8 @@ const InstructionResultPage = ({ steps = {} }) => {
             <li className="step-item">No instructions available.</li>
           )}
         </ol>
-        {/* ADDED: Display categorized database setup */}
-        {categorizedSteps.databaseSetup.length > 0 && (
-          <ol className="step-list">
-            {categorizedSteps.databaseSetup.map((step, index) => (
-              <li key={`database-${index}`} className="step-item">{step}</li>
-            ))}
-          </ol>
-        )}
+        {/* ADDED: Render API-provided database setup */}
+        {!isLoading && apiSteps.databaseSetup && renderSteps(apiSteps.databaseSetup)}
       </div>
 
       {/* CI/CD Setup Section */}
@@ -123,14 +114,8 @@ const InstructionResultPage = ({ steps = {} }) => {
             <li className="step-item">No instructions available.</li>
           )}
         </ol>
-        {/* ADDED: Display categorized CI/CD setup */}
-        {categorizedSteps.ciCdSetup.length > 0 && (
-          <ol className="step-list">
-            {categorizedSteps.ciCdSetup.map((step, index) => (
-              <li key={`cicd-${index}`} className="step-item">{step}</li>
-            ))}
-          </ol>
-        )}
+        {/* ADDED: Render API-provided CI/CD setup */}
+        {!isLoading && apiSteps.ciCdSetup && renderSteps(apiSteps.ciCdSetup)}
       </div>
 
       {/* Bash Script Section */}
@@ -138,11 +123,9 @@ const InstructionResultPage = ({ steps = {} }) => {
       <pre className="bash-script">
         {steps.bashScript || "No bash script available."}
       </pre>
-      {/* ADDED: Display generated bash script */}
-      {generatedBashScript && (
-        <pre className="bash-script">
-          {generatedBashScript}
-        </pre>
+      {/* ADDED: Render API-provided bash script */}
+      {!isLoading && apiSteps.bashScript && (
+        <pre className="bash-script">{apiSteps.bashScript}</pre>
       )}
 
       <a 
@@ -152,14 +135,14 @@ const InstructionResultPage = ({ steps = {} }) => {
       >
         Download Bash Script
       </a>
-      {/* ADDED: Download link for generated script */}
-      {generatedBashScript && (
+      {/* ADDED: Download link for API-provided script */}
+      {!isLoading && apiSteps.bashScript && (
         <a 
           className="download-link" 
-          href={`data:text/plain;charset=utf-8,${encodeURIComponent(generatedBashScript)}`}
-          download={config.OS === 'Windows' ? `${config.Project}_setup.bat` : `${config.Project}_setup.sh`}
+          href={`data:text/plain;charset=utf-8,${encodeURIComponent(apiSteps.bashScript)}`}
+          download={state?.config?.OS === 'Windows' ? `${state?.config?.Project}_setup.bat` : `${state?.config?.Project}_setup.sh`}
         >
-          Download {config.OS === 'Windows' ? `${config.Project}_setup.bat` : `${config.Project}_setup.sh`}
+          Download {state?.config?.OS === 'Windows' ? `${state?.config?.Project}_setup.bat` : `${state?.config?.Project}_setup.sh`}
         </a>
       )}
     </div>

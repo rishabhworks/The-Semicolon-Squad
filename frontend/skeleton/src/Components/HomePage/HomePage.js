@@ -72,7 +72,6 @@ const HomePage = () => {
       BackEnd: { Framework: backEnd, Version: backEndVersion },
       Database: { Name: database, Version: databaseVersion },
       PackageManager: packageManager,
-      CloudPlatform: '',  // ADDED: Include CloudPlatform from form (was missing)
     };
 
     console.log("🧠 Sending to AI:", config);
@@ -82,7 +81,34 @@ const HomePage = () => {
     if (aiResponse) {
       console.log("📥 AI Response Received:", aiResponse);
       alert("✅ AI setup instructions generated. Check console!");
-      navigate('/Instruction', { state: { aiResponse, config } });  // ADDED: Navigate to Instruction page
+      
+      // ADDED: Categorize the response (assuming it’s a string for now)
+      const commands = typeof aiResponse === 'string' ? aiResponse.split('\n').filter(cmd => cmd.trim()) : [];
+      const stepsData = {
+        initialSetup: commands.filter(cmd => cmd.includes('mkdir') || cmd.includes('md') || cmd.includes('cd')).map(cmd => ({
+          instruction: cmd.includes('cd') ? "Navigate to the project folder." : "Create a new project folder.",
+          command: cmd
+        })),
+        frontendSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.FrontEnd.Framework.toLowerCase())).map(cmd => ({
+          instruction: `Set up ${config.FrontEnd.Framework} frontend.`,
+          command: cmd
+        })),
+        backendSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.BackEnd.Framework.toLowerCase())).map(cmd => ({
+          instruction: `Set up ${config.BackEnd.Framework} backend.`,
+          command: cmd
+        })),
+        databaseSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.Database.Name.toLowerCase())).map(cmd => ({
+          instruction: `Set up ${config.Database.Name} database.`,
+          command: cmd
+        })),
+        ciCdSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.PackageManager.toLowerCase())).map(cmd => ({
+          instruction: `Configure ${config.PackageManager} for CI/CD.`,
+          command: cmd
+        })),
+        bashScript: commands.length ? (config.OS === 'Windows' ? '@echo off\n' : '#!/bin/bash\n') + commands.join('\n') : ''
+      };
+
+      navigate('/Instruction', { state: { steps: stepsData } });  // ADDED: Navigate with categorized steps
     } else {
       alert("❌ Failed to fetch AI instructions.");
     }
