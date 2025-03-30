@@ -1,5 +1,4 @@
 import os
-import json
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -21,56 +20,73 @@ def get_model():
 def generate_ai_response(data: dict) -> dict:
     model = get_model()
 
+    # Prompt for Gemini
     prompt = f"""
-You are an expert DevOps automation engineer.
+You are a professional DevOps automation engineer.
 
-🎯 TASK:
-Generate ONLY a **single complete bash script** that:
-- Creates the full project folder
-- Sets up both front-end and back-end environments
-- Initializes package managers
-- Installs required dependencies
-- Configures the database
-- Starts all services (e.g., using concurrent commands, background services, or `npm run dev` / `nodemon` etc.)
-- Works seamlessly on {data['OS']}
-- Uses the following tech stack:
+🎯 YOUR TASK:
+Generate a complete and clean bash script to fully set up a full-stack project using the configuration below.
 
-📦 USER INPUT:
-- Project Name: {data['Project']}
-- Description: {data['Description']}
+🧱 USER CONFIGURATION:
+- Project Name: {data['Project'].strip() if isinstance(data['Project'], str) else 'project'}
+- Description: {data['Description'].strip()}
 - Front-End: {data['FrontEnd']['Framework']} {data['FrontEnd']['Version']}
 - Back-End: {data['BackEnd']['Framework']} {data['BackEnd']['Version']}
 - Database: {data['Database']['Name']} {data['Database']['Version']}
 - Package Manager: {data['PackageManager']}
+- OS: {data['OS']}
 
-⚠️ OUTPUT FORMAT:
-Return ONLY the bash script, no JSON, no explanation, no markdown. The script should:
-- Be ready to run with no modification
-- Be optimized and production-quality
-- Be OS-compatible with: {data['OS']}
-- Contain comments to explain each major step
+🛑 ABSOLUTE RULES:
+- ❌ DO NOT use markdown formatting (NO triple backticks or ```bash)
+- ❌ DO NOT return JSON (no keys like `steps` or `bashScript`)
+- ❌ DO NOT escape characters (NO `\\n`, `\\`, or `\"`)
+- ❌ DO NOT wrap the script in strings or quotes
+- ✅ ONLY return clean bash code that starts with:
+  #!/bin/bash
 
-Example:
+✅ THE SCRIPT MUST:
+- Be directly executable as-is
+- Be saved into a `.sh` file with:
+  chmod +x setup.sh
+  ./setup.sh
+- Work on {data['OS']} and include platform-specific commands where needed
+- Include inline comments explaining each major section
+- Set up directories, install dependencies, configure the backend/frontend/database, and launch both services
+
+EXAMPLES:
+- React → `npx create-react-app`
+- Node → `express`, `npm init`, basic `index.js`
+- Python → `venv`, `pip install`, basic `app.py`
+- MongoDB → `pymongo`, sample queries
+- MySQL → `mysql2` (Node) or `mysql-connector-python` (Python)
+- Windows → use `start cmd /C "..."` for concurrent commands
+- Linux/macOS → use `&` for background services
+
+🔚 FINAL OUTPUT:
+ONLY return a clean bash script — no quotes, no explanation, no formatting, no JSON. Just the script content beginning with:
 #!/bin/bash
-# Step 1: Create project directory...
-mkdir myapp
-cd myapp
-...
-
-❌ DO NOT return JSON or markdown
-✅ ONLY return a valid bash script
 """
+
+
+
+
 
 
     try:
         response = model.generate_content(prompt)
-        return json.loads(response.text)
-    except json.JSONDecodeError:
-        print("❌ Failed to parse JSON from Gemini response.")
+        bash_script = response.text.strip()
+
+        # Strip markdown backticks if Gemini adds them by mistake
+        if bash_script.startswith("```bash"):
+            bash_script = bash_script.replace("```bash", "").strip()
+        if bash_script.endswith("```"):
+            bash_script = bash_script[:-3].strip()
+
         return {
-            "steps": {},
-            "bashScript": response.text.strip()
+            "steps": {},  # Legacy compatibility — can be removed if unused
+            "bashScript": bash_script
         }
+
     except Exception as e:
         print("❌ AI generation error:", e)
         return {
