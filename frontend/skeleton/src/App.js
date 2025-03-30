@@ -6,6 +6,7 @@ import HomePage from "./Components/HomePage/HomePage";
 import WelcomePage from "./Components/WelcomePage/WelcomePage";
 import Header from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
+import InstructionResultPage from "./Components/InstructionResultPage/InstructionResultPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -34,6 +35,7 @@ function App() {
             isAuthenticated ? <HomePage /> : <Navigate to="/login" />
           }
         />
+        <Route path="/InstructionResultPage" element={<InstructionResultPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
