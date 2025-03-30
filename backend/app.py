@@ -4,6 +4,10 @@ from werkzeug.exceptions import HTTPException
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+import json
+from tempfile import NamedTemporaryFile
+
+
 from flask_cors import CORS
 from AI.ai import generate_ai_response
 
@@ -66,13 +70,25 @@ def generate():
             return jsonify({"error": "data is required"}), 400
 
         result = generate_ai_response(data)
-        print(result)
 
-        return send_file(result)
+        # Convert result to JSON string
+        result_json = json.dumps(result, indent=2)
+
+        # Save to a temporary file
+        with NamedTemporaryFile(delete=False, mode='w+', suffix='.json') as temp_file:
+            temp_file.write(result_json)
+            temp_file.flush()
+            temp_path = temp_file.name
+
+        return send_file(
+            temp_path,
+            mimetype='application/json',
+            download_name=f"{data['Project'].strip().replace(' ', '_')}_setup.json",
+            as_attachment=True
+        )
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -22,21 +22,18 @@ def generate_ai_response(data: dict) -> dict:
     model = get_model()
 
     prompt = f"""
-You are a DevOps automation expert.
+You are an expert DevOps automation engineer.
 
 🎯 TASK:
-Generate a JSON response with:
-1. "steps" — broken into these sections:
-   - "initialSetup"
-   - "frontendSetup"
-   - "backendSetup"
-   - "databaseSetup"
-   - "ciCdSetup"
-
-Each section should be a list of objects:
-{{ "instruction": "explain what this step does", "command": "the shell command" }}
-
-2. "bashScript" — a complete bash script that performs all the steps above in sequence for {data['OS']}.
+Generate ONLY a **single complete bash script** that:
+- Creates the full project folder
+- Sets up both front-end and back-end environments
+- Initializes package managers
+- Installs required dependencies
+- Configures the database
+- Starts all services (e.g., using concurrent commands, background services, or `npm run dev` / `nodemon` etc.)
+- Works seamlessly on {data['OS']}
+- Uses the following tech stack:
 
 📦 USER INPUT:
 - Project Name: {data['Project']}
@@ -45,23 +42,25 @@ Each section should be a list of objects:
 - Back-End: {data['BackEnd']['Framework']} {data['BackEnd']['Version']}
 - Database: {data['Database']['Name']} {data['Database']['Version']}
 - Package Manager: {data['PackageManager']}
-- Target OS: {data['OS']}
 
 ⚠️ OUTPUT FORMAT:
-Return only valid JSON:
-{{
-  "steps": {{
-    "initialSetup": [...],
-    "frontendSetup": [...],
-    "backendSetup": [...],
-    "databaseSetup": [...],
-    "ciCdSetup": [...]
-  }},
-  "bashScript": "#!/bin/bash\\nmkdir project ..."
-}}
+Return ONLY the bash script, no JSON, no explanation, no markdown. The script should:
+- Be ready to run with no modification
+- Be optimized and production-quality
+- Be OS-compatible with: {data['OS']}
+- Contain comments to explain each major step
 
-No markdown. No explanation. Just raw JSON.
-    """
+Example:
+#!/bin/bash
+# Step 1: Create project directory...
+mkdir myapp
+cd myapp
+...
+
+❌ DO NOT return JSON or markdown
+✅ ONLY return a valid bash script
+"""
+
 
     try:
         response = model.generate_content(prompt)
