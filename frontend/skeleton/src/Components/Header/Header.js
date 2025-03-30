@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./Header.css";
 
+
 const Header = ({ isAuthenticated, setIsAuthenticated, showLogoutOnlyOnSecurePages }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();

@@ -13,6 +13,7 @@ import HomePage from "./Components/HomePage/HomePage";
 import WelcomePage from "./Components/WelcomePage/WelcomePage";
 import Header from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
+import InstructionResultPage from "./Components/InstructionResultPage/InstructionResultPage";
 
 function AppWrapper() {
   const location = useLocation();
@@ -49,6 +50,7 @@ function AppWrapper() {
             isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
           }
         />
+        <Route path="/InstructionResultPage" element={<InstructionResultPage />} />
       </Routes>
       <Footer />
     </>
