@@ -49,6 +49,7 @@ const HomePage = () => {
   const [packageManager, setPackageManager] = useState('');
   const [projectName, setProjectName] = useState('');
   const [projectDesc, setProjectDesc] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const HomePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const config = {
       OS: selectedOS,
@@ -77,6 +79,7 @@ const HomePage = () => {
     console.log("🧠 Sending to AI:", config);
 
     const aiResponse = await sendToAI(config);
+    setLoading(false);
 
     if (aiResponse) {
       console.log("📥 AI Response Received:", aiResponse);
@@ -233,8 +236,8 @@ const HomePage = () => {
           </select>
         </section>
 
-        <button type="submit" className="submit-btn">
-          Generate Project 🚀
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? <span className="spinner"></span> : "Generate Project 🚀"}
         </button>
       </form>
     </div>

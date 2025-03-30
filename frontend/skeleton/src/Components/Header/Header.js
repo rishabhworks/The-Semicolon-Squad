@@ -23,14 +23,9 @@ const Header = ({ isAuthenticated, setIsAuthenticated, showLogoutOnlyOnSecurePag
 
       <nav className="nav-links">
         {isAuthenticated ? (
-          <>
-            <Link to="/Instruction" className="instruction-link">
-              📜 Instruction
-            </Link>
-            <button className="logout-btn" onClick={handleLogout}>
-              <i className="fas fa-sign-out-alt"></i> Logout
-            </button>
-          </>
+          <button className="logout-btn" onClick={handleLogout}>
+            <i className="fas fa-sign-out-alt"></i> Logout
+          </button>
         ) : (
           <div className="dropdown">
             <button className="dropdown-btn" onClick={toggleDropdown}>

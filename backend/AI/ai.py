@@ -1,11 +1,15 @@
-import google.generativeai as genai
 import os
+import json
+import google.generativeai as genai
 from dotenv import load_dotenv
 
+# Load environment variables from .env file
 load_dotenv()
 
+# Configure the Gemini API key
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
+# Get the best available model
 def get_model():
     available_models = [m.name for m in genai.list_models()]
     return genai.GenerativeModel(
@@ -13,28 +17,28 @@ def get_model():
         else "models/gemini-2.5-pro-exp-03-25"
     )
 
-def generate_ai_response(data: dict) -> str:
+# Generate AI response based on user configuration
+def generate_ai_response(data: dict) -> dict:
     model = get_model()
 
     prompt = f"""
 You are a DevOps automation expert.
 
-🎯 Your task:
-Generate a **single bash script** that fully sets up a full-stack project using the following input.
+🎯 TASK:
+Generate a JSON response with:
+1. "steps" — broken into these sections:
+   - "initialSetup"
+   - "frontendSetup"
+   - "backendSetup"
+   - "databaseSetup"
+   - "ciCdSetup"
 
-💡 Requirements:
-- No markdown, no explanation, no code blocks.
-- Just raw, copy-pasteable bash script that works for **{data['OS']}**.
-- It should:
-  - Create a full folder structure (e.g., `client`, `server`, `config`)
-  - Initialize the project (README, git, package manager init)
-  - Install selected front-end, back-end, database dependencies
-  - Scaffold project using CLI tools if available (e.g., CRA, `django-admin`)
-  - Set up `.gitignore`, `.env` if relevant
-  - End with a dev command (e.g., `npm run dev`, `python manage.py runserver`)
-  - Should be safe to run more than once (idempotent)
+Each section should be a list of objects:
+{{ "instruction": "explain what this step does", "command": "the shell command" }}
 
-🎯 User Input:
+2. "bashScript" — a complete bash script that performs all the steps above in sequence for {data['OS']}.
+
+📦 USER INPUT:
 - Project Name: {data['Project']}
 - Description: {data['Description']}
 - Front-End: {data['FrontEnd']['Framework']} {data['FrontEnd']['Version']}
@@ -43,11 +47,34 @@ Generate a **single bash script** that fully sets up a full-stack project using 
 - Package Manager: {data['PackageManager']}
 - Target OS: {data['OS']}
 
-🎯 Output Format:
-Just return a raw `.sh` script. No markdown, no headings, no comments.
+⚠️ OUTPUT FORMAT:
+Return only valid JSON:
+{{
+  "steps": {{
+    "initialSetup": [...],
+    "frontendSetup": [...],
+    "backendSetup": [...],
+    "databaseSetup": [...],
+    "ciCdSetup": [...]
+  }},
+  "bashScript": "#!/bin/bash\\nmkdir project ..."
+}}
 
-Start now.
+No markdown. No explanation. Just raw JSON.
     """
 
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    try:
+        response = model.generate_content(prompt)
+        return json.loads(response.text)
+    except json.JSONDecodeError:
+        print("❌ Failed to parse JSON from Gemini response.")
+        return {
+            "steps": {},
+            "bashScript": response.text.strip()
+        }
+    except Exception as e:
+        print("❌ AI generation error:", e)
+        return {
+            "steps": {},
+            "bashScript": "# Something went wrong. Please try again."
+        }
