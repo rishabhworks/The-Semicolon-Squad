@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Components/Auth/Login/Login";
 import SignIn from "./Components/Auth/Signin/Signin";
@@ -7,26 +8,33 @@ import Header from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
 
 function App() {
-  const isAuthenticated = localStorage.getItem("userAuthenticated") === "true";
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("userAuthenticated") === "true"
+  );
+
+  // Update state if localStorage changes (optional)
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsAuthenticated(localStorage.getItem("userAuthenticated") === "true");
+    };
+    window.addEventListener("storage", checkAuth);
+    return () => window.removeEventListener("storage", checkAuth);
+  }, []);
 
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<WelcomePage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/signin" element={<SignIn />} />
-
         <Route
           path="/home"
           element={
-            localStorage.getItem("userAuthenticated") === "true"
-              ? <HomePage />
-              : <Navigate to="/login" />
+            isAuthenticated ? <HomePage /> : <Navigate to="/login" />
           }
         />
-        </Routes>
+      </Routes>
       <Footer />
     </BrowserRouter>
   );
