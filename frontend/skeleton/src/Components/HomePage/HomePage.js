@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';  // ADDED: For navigation
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 import { sendToAI } from "../../Services/aiapi";
 
@@ -49,7 +49,7 @@ const HomePage = () => {
   const [packageManager, setPackageManager] = useState('');
   const [projectName, setProjectName] = useState('');
   const [projectDesc, setProjectDesc] = useState('');
-  const navigate = useNavigate();  // ADDED: Navigation hook
+  const navigate = useNavigate();
 
   useEffect(() => {
     setFrontEnd('');
@@ -80,37 +80,20 @@ const HomePage = () => {
 
     if (aiResponse) {
       console.log("📥 AI Response Received:", aiResponse);
-      alert("✅ AI setup instructions generated. Check console!");
-      
-      // ADDED: Categorize the response (assuming it’s a string for now)
-      const commands = typeof aiResponse === 'string' ? aiResponse.split('\n').filter(cmd => cmd.trim()) : [];
+      alert("✅ AI setup bash script generated. Check the instruction page!");
+
       const stepsData = {
-        initialSetup: commands.filter(cmd => cmd.includes('mkdir') || cmd.includes('md') || cmd.includes('cd')).map(cmd => ({
-          instruction: cmd.includes('cd') ? "Navigate to the project folder." : "Create a new project folder.",
-          command: cmd
-        })),
-        frontendSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.FrontEnd.Framework.toLowerCase())).map(cmd => ({
-          instruction: `Set up ${config.FrontEnd.Framework} frontend.`,
-          command: cmd
-        })),
-        backendSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.BackEnd.Framework.toLowerCase())).map(cmd => ({
-          instruction: `Set up ${config.BackEnd.Framework} backend.`,
-          command: cmd
-        })),
-        databaseSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.Database.Name.toLowerCase())).map(cmd => ({
-          instruction: `Set up ${config.Database.Name} database.`,
-          command: cmd
-        })),
-        ciCdSetup: commands.filter(cmd => cmd.toLowerCase().includes(config.PackageManager.toLowerCase())).map(cmd => ({
-          instruction: `Configure ${config.PackageManager} for CI/CD.`,
-          command: cmd
-        })),
-        bashScript: commands.length ? (config.OS === 'Windows' ? '@echo off\n' : '#!/bin/bash\n') + commands.join('\n') : ''
+        initialSetup: [{ instruction: 'Directories created and README initialized.' }],
+        frontendSetup: [{ instruction: `Frontend: ${frontEnd} ${frontEndVersion}` }],
+        backendSetup: [{ instruction: `Backend: ${backEnd} ${backEndVersion}` }],
+        databaseSetup: [{ instruction: `Database: ${database} ${databaseVersion}` }],
+        ciCdSetup: [{ instruction: `Package Manager: ${packageManager}` }],
+        bashScript: aiResponse,
       };
 
-      navigate('/Instruction', { state: { steps: stepsData } });  // ADDED: Navigate with categorized steps
+      navigate('/Instruction', { state: { steps: stepsData } });
     } else {
-      alert("❌ Failed to fetch AI instructions.");
+      alert("❌ Failed to generate setup script.");
     }
   };
 
