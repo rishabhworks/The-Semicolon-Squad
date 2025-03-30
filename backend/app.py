@@ -5,11 +5,13 @@ import google.generativeai as genai
 import os
 import tempfile
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)  # ✅ Enables CORS for all incoming requests
 
 # Configure Gemini API
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -17,31 +19,32 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     print("Error: GEMINI_API_KEY not found. Check your .env file.")
 else:
-    print("GEMINI_API_KEY loaded successfully.")
+    print("✅ GEMINI_API_KEY loaded successfully.")
 
 genai.configure(api_key=GEMINI_API_KEY)
+
 
 @app.route('/api/user', methods=['POST'])
 def handle_user():
     try:
         data = request.get_json()
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
-        route = data.get('route')  # either 'signup' or 'login'
+        route = data.get('route')  # 'signup' or 'login'
 
-        if not username or not password or not route:
+        if not email or not password or not route:
             return jsonify({"error": "Missing required fields"}), 400
 
         if route == 'signup':
-            add_user_to_db(username, password)
+            add_user_to_db(email, password)
             return jsonify({"message": "User registered successfully"}), 201
 
         elif route == 'login':
-            exists = check_user_credentials(username, password)
+            exists = check_user_credentials(email, password)
             if exists:
-                return jsonify({"message": "Login successful"}), 200
+                return jsonify({"success": True, "message": "Login successful"}), 200
             else:
-                return jsonify({"message": "Invalid credentials"}), 401
+                return jsonify({"success": False, "message": "Invalid credentials"}), 401
 
         else:
             return jsonify({"error": "Invalid route value"}), 400
@@ -50,6 +53,7 @@ def handle_user():
         return jsonify({"error": str(http_err)}), http_err.code
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/api/generate-commands', methods=['POST'])
 def generate_commands():
@@ -69,7 +73,7 @@ def generate_commands():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ADDING THE BASH FILE GENERATION FUNCTION
+
 @app.route('/api/generate-bash', methods=['POST'])
 def generate_bash_script():
     try:

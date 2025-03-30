@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Auth.css";
-import { loginUser } from "../../../Services/loginapi"; // Adjust path if needed
+import { loginUser } from "../../../Services/loginapi";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -18,9 +18,8 @@ const Login = () => {
     if (result.success) {
       localStorage.setItem("userAuthenticated", "true");
       setIsAuthenticated(true);
-      navigate("/home"); // ✅ This is what redirects
-    }         
-          else {
+      navigate("/home");
+    } else {
       console.error("❌ Login failed:", result.message);
       alert(result.message);
     }
@@ -45,7 +44,9 @@ const Login = () => {
         </p>
 
         <p className="terms-text">
-          By continuing, you agree to our <a className="terms-link">Terms of Service</a> and <a className="terms-link">Privacy Policy</a>.
+          By continuing, you agree to our{" "}
+          <a href="#" className="terms-link">Terms of Service</a> and{" "}
+          <a href="#" className="terms-link">Privacy Policy</a>.
         </p>
       </div>
     </div>

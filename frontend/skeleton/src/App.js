@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./Components/Auth/Login/Login";
 import SignIn from "./Components/Auth/Signin/Signin";
 import HomePage from "./Components/HomePage/HomePage";
@@ -29,9 +30,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route
           path="/home"
-          element={
-            isAuthenticated ? <HomePage /> : <Navigate to="/login" />
-          }
+          element={isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />}
         />
       </Routes>
       <Footer />

@@ -1,3 +1,8 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "./Header.css";
+
 const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -37,3 +42,5 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
     </header>
   );
 };
+
+export default Header;
