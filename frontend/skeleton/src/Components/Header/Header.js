@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import FontAwesome
 import "./Header.css";
 
+
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
