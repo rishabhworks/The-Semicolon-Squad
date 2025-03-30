@@ -17,6 +17,7 @@ const Login = () => {
 
     if (result.success) {
       localStorage.setItem("userAuthenticated", "true");
+      setIsAuthenticated(true);
       navigate("/home"); // ✅ This is what redirects
     }         
           else {

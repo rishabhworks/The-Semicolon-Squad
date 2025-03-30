@@ -12,7 +12,6 @@ function App() {
     localStorage.getItem("userAuthenticated") === "true"
   );
 
-  // Update state if localStorage changes (optional)
   useEffect(() => {
     const checkAuth = () => {
       setIsAuthenticated(localStorage.getItem("userAuthenticated") === "true");
@@ -23,7 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header />
+      <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       <Routes>
         <Route path="/" element={<WelcomePage />} />
         <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
