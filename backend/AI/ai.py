@@ -13,7 +13,7 @@ def get_model():
         else "models/gemini-2.5-pro-exp-03-25"
     )
 
-def generate_ai_response(tech_stack: str, prompt_type: str) -> str:
+def generate_ai_response(tech_stack: str) -> str:
     model = get_model()
 
     prompt = f"Generate step-by-step setup commands for: {tech_stack}. Ensure compatibility with Linux/macOS."
