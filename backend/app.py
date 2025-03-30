@@ -6,6 +6,7 @@ import os
 import tempfile
 from dotenv import load_dotenv
 from flask_cors import CORS
+from AI.ai import generate_ai_response
 
 # Load environment variables
 load_dotenv()
@@ -55,49 +56,29 @@ def handle_user():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api/generate-commands', methods=['POST'])
-def generate_commands():
+@app.route('/api/generate', methods=['POST'])
+def generate():
     try:
         data = request.get_json()
         tech_stack = data.get('tech_stack')
+        prompt_type = data.get('prompt_type')  # "commands" or "bash"
 
-        if not tech_stack:
-            return jsonify({"error": "Tech stack is required"}), 400
+        if not tech_stack or not prompt_type:
+            return jsonify({"error": "tech_stack and prompt_type are required"}), 400
 
-        model_name = "models/gemini-1.5-pro" if "models/gemini-1.5-pro" in genai.list_models() else "models/gemini-2.5-pro-exp-03-25"
-        model = genai.GenerativeModel(model_name)
-        response = model.generate_content(f"Generate step-by-step setup commands for: {tech_stack}. Ensure compatibility with Linux/macOS.")
+        result = generate_ai_response(tech_stack, prompt_type)
 
-        return jsonify({"commands": response.text}), 200
+        if prompt_type == "bash":
+            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".sh")
+            temp_file.write(result.encode('utf-8'))
+            temp_file.close()
+            return send_file(temp_file.name, as_attachment=True, download_name="setup.sh")
+        else:
+            return jsonify({"result": result}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-@app.route('/api/generate-bash', methods=['POST'])
-def generate_bash_script():
-    try:
-        data = request.get_json()
-        tech_stack = data.get('tech_stack')
-
-        if not tech_stack:
-            return jsonify({"error": "Tech stack is required"}), 400
-
-        model_name = "models/gemini-1.5-pro" if "models/gemini-1.5-pro" in genai.list_models() else "models/gemini-2.5-pro-exp-03-25"
-        model = genai.GenerativeModel(model_name)
-        response = model.generate_content(f"Generate a complete setup script in Bash for: {tech_stack}. Ensure correct syntax and execution.")
-
-        bash_script = response.text
-
-        # Create a temporary .sh file
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".sh")
-        temp_file.write(bash_script.encode('utf-8'))
-        temp_file.close()
-
-        return send_file(temp_file.name, as_attachment=True, download_name="setup.sh")
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
