@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';  // ADDED: For navigation
 import './HomePage.css';
 import { sendToAI } from "../../Services/aiapi";
 
@@ -48,6 +49,7 @@ const HomePage = () => {
   const [packageManager, setPackageManager] = useState('');
   const [projectName, setProjectName] = useState('');
   const [projectDesc, setProjectDesc] = useState('');
+  const navigate = useNavigate();  // ADDED: Navigation hook
 
   useEffect(() => {
     setFrontEnd('');
@@ -70,6 +72,7 @@ const HomePage = () => {
       BackEnd: { Framework: backEnd, Version: backEndVersion },
       Database: { Name: database, Version: databaseVersion },
       PackageManager: packageManager,
+      CloudPlatform: '',  // ADDED: Include CloudPlatform from form (was missing)
     };
 
     console.log("🧠 Sending to AI:", config);
@@ -79,6 +82,7 @@ const HomePage = () => {
     if (aiResponse) {
       console.log("📥 AI Response Received:", aiResponse);
       alert("✅ AI setup instructions generated. Check console!");
+      navigate('/Instruction', { state: { aiResponse, config } });  // ADDED: Navigate to Instruction page
     } else {
       alert("❌ Failed to fetch AI instructions.");
     }
