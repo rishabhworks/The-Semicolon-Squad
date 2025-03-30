@@ -1,33 +1,34 @@
 :root {
-  --primary: #4CAF50;
+  --primary: #007bff;
   --secondary: #6c63ff;
-  --hover: #45a049;
+  --hover: #0056b3;
   --text-light: #ffffff;
-  --bg-light: #f9f9f9;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s ease;
+  --bg-light: #f4f6f9;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease-in-out;
 }
 
 body {
   margin: 0;
-  background-color: var(--bg-light);
+  background: linear-gradient(135deg, #eef1f5, #dfe6ee);
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* Centering containers */
 .login-container,
 .signin-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: var(--bg-light);
 }
 
+/* Box for login and signup */
 .login-box,
 .signin-box {
   background: white;
   padding: 40px;
-  border-radius: 20px;
+  border-radius: 14px;
   box-shadow: var(--shadow);
   width: 100%;
   max-width: 420px;
@@ -35,33 +36,45 @@ body {
   transition: var(--transition);
 }
 
+.login-box:hover,
+.signin-box:hover {
+  transform: translateY(-2px);
+}
+
+/* Titles */
 .login-title,
 .signin-title {
   font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 25px;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 20px;
 }
 
+/* Input Fields */
 .input {
   width: 100%;
   padding: 12px 15px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
+  margin-bottom: 16px;
+  border: 2px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
+  background: #f8f9fc;
   transition: var(--transition);
 }
 
 .input:focus {
   border-color: var(--secondary);
+  background: #eef1f9;
   box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
   outline: none;
 }
 
+/* Password Field Container */
 .password-container {
   position: relative;
 }
 
+/* Password Toggle */
 .password-toggle {
   position: absolute;
   top: 50%;
@@ -73,15 +86,16 @@ body {
   font-size: 1.2rem;
 }
 
+/* Buttons */
 .login-button,
 .submit-button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   font-size: 1rem;
   font-weight: bold;
   border: none;
   border-radius: 8px;
-  background-color: var(--primary);
+  background: var(--primary);
   color: var(--text-light);
   cursor: pointer;
   transition: var(--transition);
@@ -89,16 +103,14 @@ body {
 
 .login-button:hover,
 .submit-button:hover {
-  background-color: var(--hover);
+  background: var(--hover);
+  transform: scale(1.03);
 }
 
-.google-login {
-  margin-top: 20px;
-}
-
+/* Switch Text */
 .switch-text {
-  margin-top: 20px;
-  font-size: 0.9rem;
+  margin-top: 18px;
+  font-size: 0.95rem;
 }
 
 .switch-link {
@@ -111,23 +123,24 @@ body {
   text-decoration: underline;
 }
 
+/* Forgot Password */
 .forgot-password {
   background: none;
   border: none;
   color: var(--secondary);
   text-decoration: underline;
   cursor: pointer;
-  font-size: 0.85rem;
-  text-align: right;
+  font-size: 0.9rem;
 }
 
 .forgot-password:hover {
   text-decoration: underline;
 }
 
+/* Terms and Conditions */
 .terms-text {
   margin-top: 15px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #666;
 }
 
