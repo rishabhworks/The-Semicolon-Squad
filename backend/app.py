@@ -60,18 +60,14 @@ def handle_user():
 def generate():
     try:
         data = request.get_json()
-        tech_stack = data.get('tech_stack')
-        prompt_type = data.get('prompt_type')  
 
-        if not tech_stack or not prompt_type:
-            return jsonify({"error": "tech_stack and prompt_type are required"}), 400
+        if not data:
+            return jsonify({"error": "data is required"}), 400
 
-        result = generate_ai_response(tech_stack)
+        result = generate_ai_response(data)
+        print(result)
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".sh")
-        temp_file.write(result.encode('utf-8'))
-        temp_file.close()
-        return send_file(temp_file.name, as_attachment=True, download_name="setup.sh")
+        return send_file(result)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
