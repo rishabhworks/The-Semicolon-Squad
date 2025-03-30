@@ -1,29 +1,43 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, request, jsonify, send_file
 from Database.database import add_user_to_db, check_user_credentials
 from werkzeug.exceptions import HTTPException
+import google.generativeai as genai
+import os
+import tempfile
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # ✅ Enable CORS for all routes
+
+# Configure Gemini API
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not GEMINI_API_KEY:
+    print("Error: GEMINI_API_KEY not found. Check your .env file.")
+else:
+    print("GEMINI_API_KEY loaded successfully.")
+
+genai.configure(api_key=GEMINI_API_KEY)
 
 @app.route('/api/user', methods=['POST'])
 def handle_user():
     try:
         data = request.get_json()
-        print(data)  
-        email = data.get('email')
+        username = data.get('username')
         password = data.get('password')
         route = data.get('route')  # either 'signup' or 'login'
 
-        if not email or not password or not route:
+        if not username or not password or not route:
             return jsonify({"error": "Missing required fields"}), 400
 
         if route == 'signup':
-            add_user_to_db(email, password)
+            add_user_to_db(username, password)
             return jsonify({"message": "User registered successfully"}), 201
 
         elif route == 'login':
-            exists = check_user_credentials(email, password)
+            exists = check_user_credentials(username, password)
             if exists:
                 return jsonify({"message": "Login successful"}), 200
             else:
@@ -34,6 +48,50 @@ def handle_user():
 
     except HTTPException as http_err:
         return jsonify({"error": str(http_err)}), http_err.code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/generate-commands', methods=['POST'])
+def generate_commands():
+    try:
+        data = request.get_json()
+        tech_stack = data.get('tech_stack')
+
+        if not tech_stack:
+            return jsonify({"error": "Tech stack is required"}), 400
+
+        model_name = "models/gemini-1.5-pro" if "models/gemini-1.5-pro" in genai.list_models() else "models/gemini-2.5-pro-exp-03-25"
+        model = genai.GenerativeModel(model_name)
+        response = model.generate_content(f"Generate step-by-step setup commands for: {tech_stack}. Ensure compatibility with Linux/macOS.")
+
+        return jsonify({"commands": response.text}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# ADDING THE BASH FILE GENERATION FUNCTION
+@app.route('/api/generate-bash', methods=['POST'])
+def generate_bash_script():
+    try:
+        data = request.get_json()
+        tech_stack = data.get('tech_stack')
+
+        if not tech_stack:
+            return jsonify({"error": "Tech stack is required"}), 400
+
+        model_name = "models/gemini-1.5-pro" if "models/gemini-1.5-pro" in genai.list_models() else "models/gemini-2.5-pro-exp-03-25"
+        model = genai.GenerativeModel(model_name)
+        response = model.generate_content(f"Generate a complete setup script in Bash for: {tech_stack}. Ensure correct syntax and execution.")
+
+        bash_script = response.text
+
+        # Create a temporary .sh file
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".sh")
+        temp_file.write(bash_script.encode('utf-8'))
+        temp_file.close()
+
+        return send_file(temp_file.name, as_attachment=True, download_name="setup.sh")
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
