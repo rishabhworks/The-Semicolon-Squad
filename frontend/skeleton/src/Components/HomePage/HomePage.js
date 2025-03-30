@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './HomePage.css';
+import { sendToAI } from "../../Services/aiapi";
 
 const techStacks = {
   Windows: {
     frontEnd: ['React', 'Angular', 'Vue.js', 'Ember.js', 'Backbone.js'],
     backEnd: ['Node.js', '.NET', 'Java', 'Python', 'Ruby'],
     databases: ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'SQL Server'],
-    cloudPlatforms: ['AWS', 'Azure', 'Google Cloud', 'Heroku', 'DigitalOcean'],
     packageManagers: ['npm', 'yarn', 'NuGet', 'pip', 'gem'],
   },
   macOS: {
     frontEnd: ['React', 'Vue.js', 'Angular', 'Ember.js', 'Backbone.js'],
     backEnd: ['Node.js', 'Python', 'Ruby', 'Java', 'PHP'],
     databases: ['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'MariaDB'],
-    cloudPlatforms: ['AWS', 'Google Cloud', 'Heroku', 'DigitalOcean', 'Linode'],
     packageManagers: ['npm', 'yarn', 'Homebrew', 'pip', 'gem'],
   },
 };
@@ -43,7 +42,6 @@ const HomePage = () => {
   const [frontEnd, setFrontEnd] = useState('');
   const [backEnd, setBackEnd] = useState('');
   const [database, setDatabase] = useState('');
-  const [cloudPlatform, setCloudPlatform] = useState('');
   const [frontEndVersion, setFrontEndVersion] = useState('');
   const [backEndVersion, setBackEndVersion] = useState('');
   const [databaseVersion, setDatabaseVersion] = useState('');
@@ -55,15 +53,15 @@ const HomePage = () => {
     setFrontEnd('');
     setBackEnd('');
     setDatabase('');
-    setCloudPlatform('');
     setFrontEndVersion('');
     setBackEndVersion('');
     setDatabaseVersion('');
     setPackageManager('');
   }, [selectedOS]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const config = {
       OS: selectedOS,
       Project: projectName,
@@ -71,11 +69,19 @@ const HomePage = () => {
       FrontEnd: { Framework: frontEnd, Version: frontEndVersion },
       BackEnd: { Framework: backEnd, Version: backEndVersion },
       Database: { Name: database, Version: databaseVersion },
-      CloudPlatform: cloudPlatform,
       PackageManager: packageManager,
     };
-    console.log('Generated Project Configuration:', config);
-    alert(`✅ Project "${projectName}" configuration generated! Check console.`);
+
+    console.log("🧠 Sending to AI:", config);
+
+    const aiResponse = await sendToAI(config);
+
+    if (aiResponse) {
+      console.log("📥 AI Response Received:", aiResponse);
+      alert("✅ AI setup instructions generated. Check console!");
+    } else {
+      alert("❌ Failed to fetch AI instructions.");
+    }
   };
 
   return (
@@ -127,9 +133,7 @@ const HomePage = () => {
           >
             <option value="">Select Front-End</option>
             {techStacks[selectedOS].frontEnd.map((fe) => (
-              <option key={fe} value={fe}>
-                {fe}
-              </option>
+              <option key={fe} value={fe}>{fe}</option>
             ))}
           </select>
 
@@ -143,9 +147,7 @@ const HomePage = () => {
               >
                 <option value="">Select Version</option>
                 {versions[frontEnd].map((ver) => (
-                  <option key={ver} value={ver}>
-                    {ver}
-                  </option>
+                  <option key={ver} value={ver}>{ver}</option>
                 ))}
               </select>
             </>
@@ -161,9 +163,7 @@ const HomePage = () => {
           >
             <option value="">Select Back-End</option>
             {techStacks[selectedOS].backEnd.map((be) => (
-              <option key={be} value={be}>
-                {be}
-              </option>
+              <option key={be} value={be}>{be}</option>
             ))}
           </select>
 
@@ -175,68 +175,57 @@ const HomePage = () => {
                 value={backEndVersion}
                 onChange={(e) => setBackEndVersion(e.target.value)}
               >
+                <option value="">Select Version</option>
+                {versions[backEnd].map((ver) => (
+                  <option key={ver} value={ver}>{ver}</option>
+                ))}
+              </select>
+            </>
+          )}
+        </section>
 
-      <option value="">Select Version</option>
-      {versions[backEnd].map((ver) => (
-        <option key={ver} value={ver}>{ver}</option>
-      ))}
-    </select>
-    </>
-    )}
-    </section>
+        <section>
+          <label>Database</label>
+          <select required value={database} onChange={(e) => setDatabase(e.target.value)}>
+            <option value="">Select Database</option>
+            {techStacks[selectedOS].databases.map((db) => (
+              <option key={db} value={db}>{db}</option>
+            ))}
+          </select>
 
-    <section>
-    <label>Database</label>
-    <select required value={database} onChange={(e) => setDatabase(e.target.value)}>
-    <option value="">Select Database</option>
-    {techStacks[selectedOS].databases.map((db) => (
-    <option key={db} value={db}>{db}</option>
-    ))}
-    </select>
+          {database && (
+            <>
+              <label>{database} Version</label>
+              <select
+                required
+                value={databaseVersion}
+                onChange={(e) => setDatabaseVersion(e.target.value)}
+              >
+                <option value="">Select Version</option>
+                {versions[database].map((ver) => (
+                  <option key={ver} value={ver}>{ver}</option>
+                ))}
+              </select>
+            </>
+          )}
+        </section>
 
-    {database && (
-    <>
-    <label>{database} Version</label>
-    <select
-      required
-      value={databaseVersion}
-      onChange={(e) => setDatabaseVersion(e.target.value)}
-    >
-      <option value="">Select Version</option>
-      {versions[database].map((ver) => (
-        <option key={ver} value={ver}>{ver}</option>
-      ))}
-    </select>
-    </>
-    )}
-    </section>
+        <section>
+          <label>Package Manager</label>
+          <select required value={packageManager} onChange={(e) => setPackageManager(e.target.value)}>
+            <option value="">Select Package Manager</option>
+            {techStacks[selectedOS].packageManagers.map((pm) => (
+              <option key={pm} value={pm}>{pm}</option>
+            ))}
+          </select>
+        </section>
 
-    <section>
-    <label>Cloud Platform</label>
-    <select required value={cloudPlatform} onChange={(e) => setCloudPlatform(e.target.value)}>
-    <option value="">Select Cloud Platform</option>
-    {techStacks[selectedOS].cloudPlatforms.map((cloud) => (
-    <option key={cloud} value={cloud}>{cloud}</option>
-    ))}
-    </select>
-    </section>
-
-    <section>
-    <label>Package Manager</label>
-    <select required value={packageManager} onChange={(e) => setPackageManager(e.target.value)}>
-    <option value="">Select Package Manager</option>
-    {techStacks[selectedOS].packageManagers.map((pm) => (
-    <option key={pm} value={pm}>{pm}</option>
-    ))}
-    </select>
-    </section>
-
-    <button type="submit" className="submit-btn">
-    Generate Project 🚀
-    </button>
-    </form>
+        <button type="submit" className="submit-btn">
+          Generate Project 🚀
+        </button>
+      </form>
     </div>
-    );
+  );
 };
 
 export default HomePage;
