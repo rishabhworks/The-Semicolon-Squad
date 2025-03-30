@@ -1,26 +1,29 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from Database.database import add_user_to_db, check_user_credentials
 from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
+CORS(app)  # ✅ Enable CORS for all routes
 
 @app.route('/api/user', methods=['POST'])
 def handle_user():
     try:
         data = request.get_json()
-        username = data.get('username')
+        print(data)  
+        email = data.get('email')
         password = data.get('password')
         route = data.get('route')  # either 'signup' or 'login'
 
-        if not username or not password or not route:
+        if not email or not password or not route:
             return jsonify({"error": "Missing required fields"}), 400
 
         if route == 'signup':
-            add_user_to_db(username, password)
+            add_user_to_db(email, password)
             return jsonify({"message": "User registered successfully"}), 201
 
         elif route == 'login':
-            exists = check_user_credentials(username, password)
+            exists = check_user_credentials(email, password)
             if exists:
                 return jsonify({"message": "Login successful"}), 200
             else:
