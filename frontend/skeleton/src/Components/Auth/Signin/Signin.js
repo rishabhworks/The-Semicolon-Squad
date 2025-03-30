@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../Auth.css";
+import { signupUser } from "../../../Services/signinapi"; // adjust path if needed
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -11,23 +12,15 @@ const SignIn = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const response = await fetch("http://127.0.0.1:5000/api/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: email, // Using email as username
-        password: password,
-        route: "signup"
-      }),
-    });
+    const result = await signupUser(email, password);
 
-    const data = await response.json();
-    if (response.ok) {
+    if (result.success) {
       console.log("✅ Signup successful");
-      navigate("/home");
+      alert("🎉 Account created successfully. Please log in.");
+      navigate("/login"); // Redirect to login instead of home
     } else {
-      console.error("❌ Signup failed:", data.message || data.error);
-      alert("Signup failed");
+      console.error("❌ Signup failed:", result.message);
+      alert(result.message || "Signup failed. Please try again.");
     }
   };
 
