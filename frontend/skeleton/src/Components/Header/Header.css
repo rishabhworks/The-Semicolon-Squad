@@ -1,40 +1,87 @@
+/* Main header styling */
 .main-header {
-    position: fixed; /* 👈 Keeps it stuck to the top */
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-  
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  
-    background-color: #6c63ff;
-    padding: 15px 40px;
-    color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  
-  .logo a {
-    text-decoration: none;  /* removes underline */
-    color: white;
-    font-weight: bold;
-    font-size: 1.6rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .nav-links a {
-    margin-left: 20px;
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-    transition: color 0.3s ease;
-  }
-  
-  .nav-links a:hover {
-    color: #d1cfff;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: #4d43ff; /* Header background */
+  padding: 15px 40px;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo styling */
+.logo a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Navigation styling */
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+/* Dropdown container */
+.dropdown {
+  position: relative;
+}
+
+/* Style the dropdown button */
+.dropdown-btn {
+  background: transparent;
+  border: 2px solid black; /* Dark border */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 1.5rem;
+}
+
+/* Adjust the user icon */
+.dropdown-btn i {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+  position: absolute;
+  top: 60px; /* Push it below the button */
+  right: 0;
+  background-color: rgba(77, 67, 255, 0.9); /* Slightly lighter than header */
+  border-radius: 8px;
+  padding: 10px 0;
+  min-width: 150px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Style dropdown items */
+.dropdown-item {
+  padding: 10px 15px;
+  display: block;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+/* Hover effect */
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
