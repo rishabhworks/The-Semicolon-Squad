@@ -61,20 +61,17 @@ def generate():
     try:
         data = request.get_json()
         tech_stack = data.get('tech_stack')
-        prompt_type = data.get('prompt_type')  # "commands" or "bash"
+        prompt_type = data.get('prompt_type')  
 
         if not tech_stack or not prompt_type:
             return jsonify({"error": "tech_stack and prompt_type are required"}), 400
 
-        result = generate_ai_response(tech_stack, prompt_type)
+        result = generate_ai_response(tech_stack)
 
-        if prompt_type == "bash":
-            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".sh")
-            temp_file.write(result.encode('utf-8'))
-            temp_file.close()
-            return send_file(temp_file.name, as_attachment=True, download_name="setup.sh")
-        else:
-            return jsonify({"result": result}), 200
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".sh")
+        temp_file.write(result.encode('utf-8'))
+        temp_file.close()
+        return send_file(temp_file.name, as_attachment=True, download_name="setup.sh")
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
