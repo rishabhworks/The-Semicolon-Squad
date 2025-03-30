@@ -13,6 +13,8 @@ def get_database():
     cluster_url = os.getenv('MONGODB_CLUSTER_URL')
 
     uri = f"mongodb+srv://{username}:{password}@{cluster_url}/?retryWrites=true&w=majority&appName=Cluster0"
+
+    print(f"Connecting to MongoDB at {uri}")
     client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 
     try:
