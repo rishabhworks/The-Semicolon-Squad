@@ -30,7 +30,8 @@ function AppWrapper() {
   }, []);
 
   // Define secure (authenticated) routes
-  const securePaths = ["/home"];
+  const securePaths = ["/home", "/Instruction"];
+
   const isSecurePage = securePaths.includes(location.pathname);
 
   return (
@@ -50,7 +51,18 @@ function AppWrapper() {
             isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
           }
         />
-        <Route path="/InstructionResultPage" element={<InstructionResultPage />} />
+        <Route
+          path="/Instruction"
+          element={
+            isAuthenticated ? (
+              <InstructionResultPage />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+
       </Routes>
       <Footer />
     </>

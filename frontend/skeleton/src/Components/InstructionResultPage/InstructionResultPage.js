@@ -1,7 +1,7 @@
 import React from 'react';
 import './InstructionResultPage.css';
 
-const InstructionResultPage = ({ steps }) => {
+const InstructionResultPage = ({ steps = {} }) => {
   return (
     <div className="instruction-container">
       <h1 className="instruction-title">Command Line Instructions</h1>
@@ -10,7 +10,7 @@ const InstructionResultPage = ({ steps }) => {
       <div className="step-section">
         <h2 className="step-section-title">Initial Setup</h2>
         <ol className="step-list">
-          {steps.initialSetup && steps.initialSetup.length > 0 ? (
+          {steps.initialSetup?.length ? (
             steps.initialSetup.map((step, index) => (
               <li key={index} className="step-item">{step}</li>
             ))
@@ -24,7 +24,7 @@ const InstructionResultPage = ({ steps }) => {
       <div className="step-section">
         <h2 className="step-section-title">Frontend Setup</h2>
         <ol className="step-list">
-          {steps.frontendSetup && steps.frontendSetup.length > 0 ? (
+          {steps.frontendSetup?.length ? (
             steps.frontendSetup.map((step, index) => (
               <li key={index} className="step-item">{step}</li>
             ))
@@ -38,7 +38,7 @@ const InstructionResultPage = ({ steps }) => {
       <div className="step-section">
         <h2 className="step-section-title">Backend Setup</h2>
         <ol className="step-list">
-          {steps.backendSetup && steps.backendSetup.length > 0 ? (
+          {steps.backendSetup?.length ? (
             steps.backendSetup.map((step, index) => (
               <li key={index} className="step-item">{step}</li>
             ))
@@ -52,7 +52,7 @@ const InstructionResultPage = ({ steps }) => {
       <div className="step-section">
         <h2 className="step-section-title">Database Setup</h2>
         <ol className="step-list">
-          {steps.databaseSetup && steps.databaseSetup.length > 0 ? (
+          {steps.databaseSetup?.length ? (
             steps.databaseSetup.map((step, index) => (
               <li key={index} className="step-item">{step}</li>
             ))
@@ -66,7 +66,7 @@ const InstructionResultPage = ({ steps }) => {
       <div className="step-section">
         <h2 className="step-section-title">CI/CD Setup</h2>
         <ol className="step-list">
-          {steps.ciCdSetup && steps.ciCdSetup.length > 0 ? (
+          {steps.ciCdSetup?.length ? (
             steps.ciCdSetup.map((step, index) => (
               <li key={index} className="step-item">{step}</li>
             ))
@@ -76,7 +76,7 @@ const InstructionResultPage = ({ steps }) => {
         </ol>
       </div>
 
-      {/* Bash Script Section - Emphasized */}
+      {/* Bash Script Section */}
       <h2 className="script-title">Your Setup Bash Script</h2>
       <pre className="bash-script">
         {steps.bashScript || "No bash script available."}
