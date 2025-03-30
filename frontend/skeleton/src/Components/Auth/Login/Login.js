@@ -33,9 +33,8 @@ const Login = ({ setIsAuthenticated }) => {
           <input name="email" type="email" placeholder="Email" className="input" />
           <div className="password-container">
             <input name="password" type="password" placeholder="Password" className="input" />
-            <button type="button" className="password-toggle">👁️</button>
           </div>
-          <button type="button" className="forgot-password">Forgot password?</button>
+          
           <button type="submit" className="login-button">Log in</button>
         </form>
 
@@ -43,11 +42,6 @@ const Login = ({ setIsAuthenticated }) => {
           Don’t have an account? <Link to="/signin" className="switch-link">Sign up</Link>
         </p>
 
-        <p className="terms-text">
-          By continuing, you agree to our{" "}
-          <a href="#" className="terms-link">Terms of Service</a> and{" "}
-          <a href="#" className="terms-link">Privacy Policy</a>.
-        </p>
       </div>
     </div>
   );
