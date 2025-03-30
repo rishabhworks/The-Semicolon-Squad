@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:5000/api/user";
+const API_BASE_URL = "http://127.0.0.1:5000";
 
 export const loginUser = async (email, password) => {
   try {
@@ -15,7 +15,7 @@ export const loginUser = async (email, password) => {
     });
 
     const data = await response.json();
-
+    console.log("Response from API:", data);
     if (response.ok) {
       return { success: true, message: data.message || "Login successful" };
     } else {

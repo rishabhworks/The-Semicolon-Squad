@@ -11,6 +11,7 @@ const Login = () => {
 
     const email = e.target.email.value;
     const password = e.target.password.value;
+    console.log("Logging in with:", email, password);
 
     const result = await loginUser(email, password);
 
